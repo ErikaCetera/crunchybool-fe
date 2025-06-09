@@ -1,19 +1,23 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Anime from "./pages/Anime";
+import HomePage from "./pages/HomePage";
+import DetailAnime from "./pages/DetailAnime";
+
 function App() {
     return (
 
+        <BrowserRouter>
+                <Routes>
+                    <Route element={<Layout />}>
+                        <Route path="/" element={ <HomePage/>}/>
+                        <Route path="/anime" element={ <Anime/>}/>
+                        <Route path="/anime/:id" element={ <DetailAnime/>}/>
+                        
 
-        <Router>
-            <AppAllert />
-            <Routes>
-                <Route path="/" element={<Layout />}>
-                    <Route index element={<HomePage />} />
-                    <Route path="/search" element={<SearchDoctors />} />
-                    <Route path="doctor/:slug" element={<DoctorDetail />} />
-                    <Route path="registration" element={<DoctorRegistration />} />
-                    <Route path="*" element={<NotFound />} />
-                </Route>
-            </Routes>
-        </Router>
+                        <Route path="*" element={<NotFound />} />
+                    </Route>
+                </Routes>
+        </BrowserRouter>
 
     );
 }
