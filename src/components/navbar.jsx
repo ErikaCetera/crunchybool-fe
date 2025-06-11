@@ -6,7 +6,7 @@ function Navbar() {
       <div className="container">
         {/* logo */}
         <div>
-          <img src="" alt="Logo" />
+       <p>logo</p>
         </div>
 
         {/* lista dei link */}
