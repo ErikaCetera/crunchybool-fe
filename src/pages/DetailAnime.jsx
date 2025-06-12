@@ -4,64 +4,62 @@ import { useParams } from "react-router-dom";
 import ReviewForm from "../components/ReviewForm";
 
 function DetailAnime() {
-
-
-
     const { id } = useParams();
     const [anime, setAnime] = useState(null);
+    const [loading, setLoading] = useState(true); // Stato per il loader
     const [data, setData] = useState({
-        username:"",
-        description:"",
-        rating:1,
-        
+        username: "",
+        description: "",
+        rating: 1,
     });
 
-
-
     useEffect(() => {
+        setLoading(true);
         axios.get(`http://localhost:8080/api/animes/${id}`)
             .then(response => {
                 console.log(response.data);
                 setAnime(response.data);
             })
-            .catch(error => console.error("Errore nel recupero dei dettagli dell'anime:", error));
+            .catch(error => console.error("Errore nel recupero dei dettagli dell'anime:", error))
+            .finally(() => setLoading(false)); // Fine caricamento
     }, [id]);
 
-
-    // Se l'anime non è ancora caricato, mostra un loader
-    if (!anime) {
-        return <div className="text-center mt-5">Caricamento...</div>;
-    }
-
     const submitReview = (e) => {
-    e.preventDefault();
-    const reviewData = {
-        ...data, // Mantiene username, description e rating
-        anime: { id: id } // Associa la recensione all'anime
+        e.preventDefault();
+        const reviewData = {
+            ...data,
+            anime: { id: id }
+        };
+
+        axios.post("http://localhost:8080/api/reviews", reviewData)
+            .then(response => {
+                console.log("Recensione salvata!", response.data);
+                setData(data);
+            })
+            .catch(error => console.error("Errore nell'inserimento della recensione:", error));
     };
 
-    axios.post("http://localhost:8080/api/reviews", reviewData)
-        .then(response => {
-            console.log("Recensione salvata!", response.data);
-            setData(data); 
-        })
-        .catch(error => console.error("Errore nell'inserimento della recensione:", error));
-};
-
-
-    // Gestione del cambiamento degli input
     const handleInputChange = (event) => {
-    const { name, value } = event.target;
-    console.log(event.value);
-    
-    setData(prevData => ({
-        ...prevData,
-        [name]: value
-    }));
-    console.log("Stato aggiornato:", name, value);
-};
+        const { name, value } = event.target;
+        console.log(event.value);
 
+        setData(prevData => ({
+            ...prevData,
+            [name]: value
+        }));
+        console.log("Stato aggiornato:", name, value);
+    };
 
+    // Mostrare il loader durante il caricamento dei dati
+    if (loading) {
+        return (
+            <div className="text-center my-5">
+                <div className="spinner-border text-primary" role="status">
+                    <span className="visually-hidden">Caricamento...</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="container mt-5">
@@ -75,7 +73,6 @@ function DetailAnime() {
                     {anime.genres && anime.genres.map((genre) => (
                         <span key={genre.id} className="badge bg-secondary">{genre.name}</span>
                     ))}
-
                     <p><strong>Descrizione:</strong> {anime.description}</p>
                     <a href="/" className="btn btn-primary">Torna alla lista</a>
                 </div>
@@ -91,9 +88,7 @@ function DetailAnime() {
                                 <div>
                                     <strong>{review.username}</strong>: {review.description}
                                 </div>
-                                <div>
-                                    ⭐ {review.rating}/5
-                                </div>
+                                <div>⭐ {review.rating}/5</div>
                             </li>
                         ))}
                     </ul>
@@ -103,14 +98,12 @@ function DetailAnime() {
             </div>
 
             <ReviewForm
-            handleInputChange={handleInputChange}
-            data={data}
-            submitReview={submitReview}/>
-
+                handleInputChange={handleInputChange}
+                data={data}
+                submitReview={submitReview}
+            />
         </div>
-        
     );
-
 }
 
 export default DetailAnime;
