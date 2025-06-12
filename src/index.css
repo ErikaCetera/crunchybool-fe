@@ -1,0 +1,111 @@
+
+body {
+  background-color: #121212;
+  color: white; 
+  font-family: Arial, sans-serif;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 20px;
+}
+
+/* Navbar */
+.custom-navbar {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  background-color: #ff6600; 
+  padding: 5px 10px; /* Ridotto padding */
+  z-index: 1000; 
+}
+
+
+.logo {
+  font-size: 20px;
+  font-weight: bold;
+  color: white;
+  text-decoration: none;
+}
+
+.navbar-nav .nav-link {
+  color: white;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+}
+
+.navbar-nav .nav-link:hover {
+  color: #e5e900bc; 
+}
+
+
+/* Home */
+.hero-section {
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.btn-animated {
+  display: inline-block;
+  background-color: #ff6600;
+  color: white;
+  font-size: 20px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 6px;
+  text-decoration: none;
+  transition: all 0.3s ease-in-out;
+  margin-bottom: 30px;
+}
+
+.btn-animated:hover {
+  background-color: #e65c00;
+  transform: scale(1.1); 
+}
+
+.scroll-container {
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  padding: 10px;
+  white-space: nowrap;
+}
+
+
+.anime-card {
+  flex: 0 0 auto;
+  width: 500px; 
+  text-align: center;
+}
+
+.anime-image {
+  width: 300px;
+  height: 400px;
+  border-radius: 8px;
+}
+
+.anime-swiper {
+  padding: 10px;
+}
+
+
+
+
+/* Footer */
+
+.custom-footer {
+  background-color: #222; 
+  color: white;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px 0;
+  margin-top: 40px; 
+}
+
+
+
