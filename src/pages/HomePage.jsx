@@ -24,7 +24,7 @@ function HomePage() {
           <p className="fs-4 text-light">
             Scopri gli anime più avvincenti e immergiti in mondi straordinari pieni di avventure!
           </p>
-         <Link to="/anime" className="btn-animated">Scoprili tutti</Link>
+         <Link to="/anime" className="btn-animated">Scopri</Link>
 
         </div>
 

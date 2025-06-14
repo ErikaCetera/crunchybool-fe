@@ -2,11 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import ReviewForm from "../components/ReviewForm";
+import { Link } from "react-router-dom";
+import CardDetail from "../components/CardDetail";
 
 function DetailAnime() {
     const { id } = useParams();
     const [anime, setAnime] = useState(null);
-    const [loading, setLoading] = useState(true); // Stato per il loader
+    const [loading, setLoading] = useState(true);
     const [data, setData] = useState({
         username: "",
         description: "",
@@ -21,7 +23,7 @@ function DetailAnime() {
                 setAnime(response.data);
             })
             .catch(error => console.error("Errore nel recupero dei dettagli dell'anime:", error))
-            .finally(() => setLoading(false)); // Fine caricamento
+            .finally(() => setLoading(false));
     }, [id]);
 
     const submitReview = (e) => {
@@ -50,11 +52,10 @@ function DetailAnime() {
         console.log("Stato aggiornato:", name, value);
     };
 
-    // Mostrare il loader durante il caricamento dei dati
     if (loading) {
         return (
             <div className="text-center my-5">
-                <div className="spinner-border text-primary" role="status">
+                <div className="spinner-border text-warning" role="status">
                     <span className="visually-hidden">Caricamento...</span>
                 </div>
             </div>
@@ -62,48 +63,67 @@ function DetailAnime() {
     }
 
     return (
-        <div className="container mt-5">
-            <div className="row">
-                <div className="col-md-4">
-                    <img src={`http://localhost:8080/${anime.image}`} className="img-fluid rounded" alt={anime.title} />
-                </div>
-                <div className="col-md-8">
-                    <h1>{anime.title}</h1>
-                    <h4 className="text-muted">{anime.originalTitle}</h4>
-                    {anime.genres && anime.genres.map((genre) => (
-                        <span key={genre.id} className="badge bg-secondary">{genre.name}</span>
-                    ))}
-                    <p><strong>Descrizione:</strong> {anime.description}</p>
-                    <a href="/" className="btn btn-primary">Torna alla lista</a>
-                </div>
-            </div>
 
-            {/* Sezione recensioni */}
-            <div className="mt-5">
-                <h2>Recensioni 📝</h2>
-                {anime.reviews && anime.reviews.length > 0 ? (
-                    <ul className="list-group">
-                        {anime.reviews.map((review) => (
-                            <li key={review.id} className="list-group-item d-flex justify-content-between align-items-center">
-                                <div>
-                                    <strong>{review.username}</strong>: {review.description}
+        <div className="container mt-5 anime-detail">
+            <div className="mt-4">
+                <Link to="/anime" className="btn btn-orange mb-4 ">Torna alla lista</Link>
+            </div>
+            <div className="row justify-content-center mb-5">
+
+                {/* Card  Dettaglio */}
+                <section className="row justify-content-center mb-5">
+                    <CardDetail
+                        image={anime.image}
+                        title={anime.title}
+                        originalTitle={anime.originalTitle}
+                        genres={anime.genres}
+                        production={anime.production}
+                        seasons={anime.seasons}
+                        episode={anime.episode}
+                        rating={anime.rating}
+                        description={anime.description}
+                    />
+                </section>
+
+                <hr />
+
+                {/* Sezione Recensioni */}
+                <section className="mt-5 reviews-section">
+                    <h2 className="text-center text-warning mb-4">Recensioni</h2>
+
+                    {anime.reviews?.length > 0 ? (
+                        <div className="row justify-content-center">
+                            <div className="col-md-10">
+                                <div className="card bg-dark text-light shadow-lg p-4">
+                                    {anime.reviews.map((review) => (
+                                        <div key={review.id} className="card-body border-bottom  pb-3">
+                                            <h5 className="card-title text-info">{review.username}</h5>
+                                            <p className="card-text">{review.description}</p>
+                                            <div className="d-flex justify-content-between align-items-center">
+                                                <span className="badge fs-6">⭐ {review.rating}</span>
+                                            </div>
+                                        </div>
+                                    ))}
                                 </div>
-                                <div>⭐ {review.rating}/5</div>
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p className="text-muted">Nessuna recensione disponibile.</p>
-                )}
-            </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="text-center">
+                            <h5 className="text-danger">✨ Sii il primo a lasciare una recensione! ✨</h5>
+                        </div>
+                    )}
 
-            <ReviewForm
-                handleInputChange={handleInputChange}
-                data={data}
-                submitReview={submitReview}
-            />
+
+                    <hr />
+
+                    {/* Form Recensione */}
+                    <ReviewForm handleInputChange={handleInputChange} data={data} submitReview={submitReview} />
+                </section>
+            </div>
         </div>
     );
+
+
 }
 
 export default DetailAnime;

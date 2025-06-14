@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import Card from "../components/Card";
 
 function Anime() {
     const [anime, setAnime] = useState([]);
     const [query, setQuery] = useState("");
     const [selectedGenre, setSelectedGenre] = useState("");
     const [genreList, setGenreList] = useState([]);
-    const [loading, setLoading] = useState(true); // Stato per il caricamento
+    const [loading, setLoading] = useState(true);
 
     // Funzione per ottenere tutti gli anime
     const fetchAnimes = () => {
@@ -24,6 +25,7 @@ function Anime() {
             .catch(error => console.error("Errore nel recupero dei generi", error));
     };
 
+    //Cerca per titolo
     const searchByTitle = () => {
         setLoading(true);
         axios.get(`http://localhost:8080/api/animes/search?name=${query}`)
@@ -32,6 +34,7 @@ function Anime() {
             .finally(() => setLoading(false));
     };
 
+    //Filtra per genere
     const searchByGenre = () => {
         setLoading(true);
         axios.get(`http://localhost:8080/api/animes/searchByGenre?genre=${selectedGenre}`)
@@ -40,7 +43,7 @@ function Anime() {
             .finally(() => setLoading(false));
     };
 
-    // Effetti per caricare i dati al montaggio del componente
+
     useEffect(() => {
         fetchAnimes();
         fetchGenres();
@@ -48,71 +51,62 @@ function Anime() {
 
     return (
         <div className="container mt-5">
-            <h1 className="text-center mb-4">Lista Anime 🎬</h1>
+            <h1 className="mb-4 text-center text-warning display-3">Anime</h1>
 
-            {/* Barra di ricerca con filtri separati */}
-            <div className="row mb-4">
+
+            <section className="row mb-5 d-flex justify-content-between">
+
                 {/* Filtro per titolo */}
-                <div className="col-md-6">
+                <div className="col-md-5 input-group w-25">
                     <input
                         type="text"
-                        placeholder="Cerca per titolo o titolo originale..."
+                        placeholder="Cerca titolo ..."
                         value={query}
                         onChange={(e) => setQuery(e.target.value)}
-                        className="form-control"
+                        className="form-control bg-dark text-light"
                     />
-                </div>
-                <div className="col-md-2">
-                    <button className="btn btn-primary w-100" onClick={searchByTitle}>
-                        Cerca per Titolo
+                    <button className="btn btn-outline-light ms-2" onClick={searchByTitle}>
+                        Cerca
                     </button>
                 </div>
 
                 {/* Filtro per genere */}
-                <div className="col-md-4">
+                <div className="col-md-3 input-group w-25">
                     <select
                         value={selectedGenre}
                         onChange={(e) => setSelectedGenre(e.target.value)}
-                        className="form-select"
+                        className="form-control bg-dark text-light"
                     >
                         <option value="">Tutti i generi</option>
                         {genreList.map(g => (
                             <option key={g.id} value={g.name}>{g.name}</option>
                         ))}
                     </select>
-                </div>
-                <div className="col-md-2">
-                    <button className="btn btn-success w-100" onClick={searchByGenre}>
-                        Filtra per Genere
+                    <button className="btn btn-outline-light ms-2" onClick={searchByGenre}>
+                        Filtra
                     </button>
                 </div>
-            </div>
+            </section>
 
-            {/* Mostra il loader durante il caricamento */}
-            {loading ? (
-                <div className="text-center my-4">
-                    <div className="spinner-border text-primary" role="status">
-                        <span className="visually-hidden">Caricamento...</span>
-                    </div>
-                </div>
-            ) : (
-                <div className="row">
-                    {anime.map((curanime) => (
-                        <div className="col col-12 col-md-6 col-lg-3 mb-4" key={curanime.id}>
-                            <div className="card shadow-lg border-0 rounded overflow-hidden mx-auto h-100">
-                                <img src={`http://localhost:8080/${curanime.image}`} className="card-img-top img-fluid" style={{ maxHeight: '350px' }} alt={curanime.title} />
-                                <div className="card-body text-center">
-                                    <h4 className="card-title text-primary">{curanime.title}</h4>
-                                    <h6 className="text-muted">{curanime.originalTitle}</h6>
-                                </div>
-                                <div className="card-footer bg-transparent border-0 text-center">
-                                    <a href={`/anime/${curanime.id}`} className="btn btn-outline-primary btn-sm">Dettagli</a>
-                                </div>
-                            </div>
+           {/* Cards */}
+            <section>
+                {loading ? (
+                    <div className="text-center my-4">
+                        <div className="spinner-border text-primary" role="status">
+                            <span className="visually-hidden">Caricamento...</span>
                         </div>
-                    ))}
-                </div>
-            )}
+                    </div>
+                ) : (
+                    <div className="row">
+                        {anime.map((curanime) => (
+                            <Card key={curanime.id} id={curanime.id}
+                                image={curanime.image} title={curanime.title}
+                                originalTitle={curanime.originalTitle} />
+
+                        ))}
+                    </div>
+                )}
+            </section>
         </div>
     );
 }
